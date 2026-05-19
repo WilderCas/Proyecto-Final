@@ -183,28 +183,38 @@ class ArbolAVL:
             return self._buscar_recursivo(nodo_actual.izquierda, posicion)
 
         return self._buscar_recursivo(nodo_actual.derecha, posicion)
-
+    
     def modificar_peso(self, posicion, cambio):
         """
         Modifica el peso de un movimiento.
 
-        cambio puede ser positivo o negativo.
-        Ejemplo:
-        +2 si el programa ganó.
-        -1 si el programa perdió.
+        Retorna un texto con el cambio realizado para poder mostrarlo
+        en reportes o Graphviz.
         """
+
         movimiento = self.buscar(posicion)
 
         if movimiento is not None:
+            peso_anterior = movimiento.peso
+
             movimiento.peso += cambio
 
-            # Evitamos que el peso sea negativo.
             if movimiento.peso < 0:
                 movimiento.peso = 0
 
-            return True
+            peso_nuevo = movimiento.peso
 
-        return False
+            texto_cambio = (
+                f"Posición {posicion} | "
+                f"Peso anterior: {peso_anterior} | "
+                f"Cambio: {cambio} | "
+                f"Peso nuevo: {peso_nuevo}"
+            )
+
+            return texto_cambio
+
+        return None
+
 
     def elegir_mejor_movimiento_disponible(self, tablero):
         """

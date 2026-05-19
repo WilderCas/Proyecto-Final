@@ -25,13 +25,50 @@ class VentanaPrincipal:
 
         self.ventana = tk.Tk()
         self.ventana.title("Tik Tak Toe / Totito con Aprendizaje")
-        self.ventana.geometry("850x650")
+        self.ventana.geometry("850x750")
         self.ventana.resizable(False, False)
         self.ventana.config(bg="#1E293B")
 
         self.botones_tablero = None
 
         self.crear_interfaz()
+
+    def configurar_grado_arbol_b(self):
+        """
+        Permite configurar el grado mínimo del Árbol B desde la interfaz.
+        """
+
+        nuevo_grado = simpledialog.askinteger(
+            "Configurar Árbol B",
+            "Ingresa el grado mínimo del Árbol B.\nDebe ser 2 o mayor:",
+            minvalue=2
+        )
+
+        if nuevo_grado is None:
+            return
+
+        confirmar = messagebox.askyesno(
+            "Confirmar cambio",
+            "Cambiar el grado del Árbol B reiniciará el historial actual.\n"
+            "¿Deseas continuar?"
+        )
+
+        if not confirmar:
+            return
+
+        correcto = self.juego.configurar_grado_arbol_b(nuevo_grado)
+
+        if correcto:
+            messagebox.showinfo(
+                "Grado configurado",
+                f"El Árbol B fue configurado con grado mínimo {nuevo_grado}.\n"
+                f"Máximo de claves por nodo: {(2 * nuevo_grado) - 1}."
+            )
+        else:
+            messagebox.showerror(
+                "Error",
+                "El grado debe ser 2 o mayor."
+            )
 
     def crear_interfaz(self):
         """
@@ -191,6 +228,17 @@ class VentanaPrincipal:
             command=self.buscar_partida
         )
         boton_buscar.pack(pady=5)
+
+        boton_grado = tk.Button(
+            panel,
+            text="Configurar grado Árbol B",
+            font=("Arial", 11, "bold"),
+            width=25,
+            bg="#A855F7",
+            fg="white",
+            command=self.configurar_grado_arbol_b
+        )
+        boton_grado.pack(pady=5)
 
         boton_estadisticas = tk.Button(
             panel,
@@ -394,18 +442,23 @@ class VentanaPrincipal:
         caja_texto.insert("1.0", texto_historial)
         caja_texto.config(state="disabled")
 
-    def obtener_historial_como_texto(self):
-        """
-        Convierte el historial del Árbol B en texto para mostrarlo en Tkinter.
-        """
+        def obtener_historial_como_texto(self):
+            """
+            Convierte el historial del Árbol B en texto para mostrarlo en Tkinter.
+            """
 
-        if self.juego.historial.contador_partidas == 0:
-            return "No hay partidas registradas."
+            texto = ""
+            texto += f"Grado mínimo del Árbol B: {self.juego.grado_arbol_b}\n"
+            texto += f"Máximo de claves por nodo: {(2 * self.juego.grado_arbol_b) - 1}\n"
+            texto += "===================================\n\n"
 
-        texto = ""
-        texto = self._recorrer_arbol_b_texto(self.juego.historial.arbol_b.raiz, texto)
+            if self.juego.historial.contador_partidas == 0:
+                texto += "No hay partidas registradas."
+                return texto
 
-        return texto
+            texto = self._recorrer_arbol_b_texto(self.juego.historial.arbol_b.raiz, texto)
+
+            return texto
 
     def _recorrer_arbol_b_texto(self, nodo, texto):
         """

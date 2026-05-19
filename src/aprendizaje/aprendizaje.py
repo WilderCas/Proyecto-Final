@@ -14,6 +14,7 @@ class Aprendizaje:
         self.victorias_programa = 0
         self.derrotas_programa = 0
         self.empates = 0
+        self.ultimo_cambio_pesos = ""
 
         # Guarda en qué iteración el programa ganó por primera vez.
         # Si todavía no ha ganado, se mantiene en None.
@@ -44,11 +45,18 @@ class Aprendizaje:
             cambio = 0
             self.empates += 1
 
+        self.ultimo_cambio_pesos = ""
+
         actual = jugadas_programa.cabeza
 
         while actual is not None:
             posicion = actual.dato
-            self.arbol_movimientos.modificar_peso(posicion, cambio)
+
+            texto_cambio = self.arbol_movimientos.modificar_peso(posicion, cambio)
+
+            if texto_cambio is not None:
+                self.ultimo_cambio_pesos += texto_cambio + "\n"
+
             actual = actual.siguiente
 
         self.iteraciones += 1
@@ -73,6 +81,13 @@ class Aprendizaje:
             texto += "Primera victoria del programa: todavía no ha ganado.\n"
         else:
             texto += f"Primera victoria del programa en la iteración: {self.primera_victoria_en}\n"
+
+        texto += "\nÚltimos cambios de peso:\n"
+
+        if self.ultimo_cambio_pesos == "":
+            texto += "No hay cambios registrados todavía.\n"
+        else:
+            texto += self.ultimo_cambio_pesos
 
         texto += "===================================\n"
 

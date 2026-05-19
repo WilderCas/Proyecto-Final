@@ -24,7 +24,7 @@ class JuegoTotito:
     - Aplicar aprendizaje mediante pesos.
     """
 
-    def __init__(self):
+    def __init__(self, grado_arbol_b=2):
         self.tablero = Tablero()
 
         self.jugador_humano = Jugador("Jugador Humano", "X", "HUMANO")
@@ -40,11 +40,55 @@ class JuegoTotito:
 
         self.aprendizaje = Aprendizaje(self.arbol_movimientos)
 
-        self.historial = HistorialPartidas(grado_arbol_b=2)
+        self.grado_arbol_b = grado_arbol_b
+        self.historial = HistorialPartidas(grado_arbol_b=self.grado_arbol_b)
 
         self.graphviz_manager = GraphvizManager()
 
         self.partidas_jugadas = 0
+
+    def configurar_grado_arbol_b(self, nuevo_grado):
+        """
+        Configura el grado mínimo del Árbol B.
+
+        Importante:
+        Al cambiar el grado, se reinicia el historial porque el Árbol B
+        debe reconstruirse con la nueva configuración.
+        """
+
+        if nuevo_grado < 2:
+            return False
+
+        self.grado_arbol_b = nuevo_grado
+        self.historial = HistorialPartidas(grado_arbol_b=self.grado_arbol_b)
+
+        self.partidas_jugadas = 0
+
+        self.limpiar_imagenes_graphviz()
+
+        return True
+
+
+    def limpiar_imagenes_graphviz(self):
+        """
+        Elimina todos los archivos generados por Graphviz.
+
+        Borra archivos .png y .dot dentro de la carpeta imagenes_graphviz.
+        Esto sirve cuando se cambia el grado del Árbol B o se reinicia el proyecto.
+        """
+
+        carpeta = "imagenes_graphviz"
+
+        if not os.path.exists(carpeta):
+            os.makedirs(carpeta)
+            return
+
+        for nombre_archivo in os.listdir(carpeta):
+            ruta_archivo = os.path.join(carpeta, nombre_archivo)
+
+            if os.path.isfile(ruta_archivo):
+                if nombre_archivo.endswith(".png") or nombre_archivo.endswith(".dot"):
+                    os.remove(ruta_archivo)
 
     def reiniciar_partida(self):
         """
@@ -64,6 +108,7 @@ class JuegoTotito:
         self.aprendizaje = Aprendizaje(self.arbol_movimientos)
         self.historial.limpiar()
         self.partidas_jugadas = 0
+        self.limpiar_imagenes_graphviz()
 
     def cambiar_turno(self):
         """
