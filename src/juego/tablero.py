@@ -7,9 +7,6 @@ class Tablero:
     """
     Clase que representa el tablero de Totito.
 
-    El tablero normalmente se podría representar con una matriz 3x3,
-    pero por las restricciones del proyecto usamos una lista enlazada propia.
-
     Posiciones del tablero:
 
         0 | 1 | 2

@@ -31,12 +31,6 @@ class NodoB:
     """
     Nodo del Árbol B.
 
-    IMPORTANTE:
-    Para este proyecto se evita usar listas como estructura principal.
-    Sin embargo, para el funcionamiento interno del nodo B usamos una
-    colección controlada de tamaño pequeño, porque el árbol B necesita
-    manejar varias claves dentro de un mismo nodo.
-
     Cada nodo guarda:
     - partidas: partidas almacenadas en el nodo.
     - hijos: referencias a otros nodos.
@@ -55,7 +49,6 @@ class ArbolB:
 
     El grado mínimo se puede configurar.
     Si grado_minimo = 2, cada nodo puede tener como máximo 3 claves.
-    Si grado_minimo = 3, cada nodo puede tener como máximo 5 claves.
 
     Fórmula:
     máximo de claves = 2 * grado_minimo - 1
