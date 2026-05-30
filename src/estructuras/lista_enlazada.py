@@ -14,10 +14,8 @@ class Nodo:
 
 class ListaEnlazada:
     """
-    Lista enlazada simple creada manualmente.
-
-    La usaremos para evitar depender de listas normales de Python
-    como estructura principal del proyecto.
+    Lista enlazada simple creada para guardar las jugadas 
+    del programa durante una partida.
     """
 
     def __init__(self):

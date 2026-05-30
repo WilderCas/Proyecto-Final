@@ -15,6 +15,8 @@ class VentanaPrincipal:
     - Jugar manualmente contra el programa.
     - Entrenar automáticamente.
     - Ver historial.
+    - Buscar partidas por ID.
+    - Configurar el grado del Árbol B.
     - Ver estadísticas.
     - Reiniciar aprendizaje.
     - Ver integrantes.
@@ -59,10 +61,13 @@ class VentanaPrincipal:
         correcto = self.juego.configurar_grado_arbol_b(nuevo_grado)
 
         if correcto:
+            self.actualizar_contador_partidas()
+
             messagebox.showinfo(
                 "Grado configurado",
                 f"El Árbol B fue configurado con grado mínimo {nuevo_grado}.\n"
-                f"Máximo de claves por nodo: {(2 * nuevo_grado) - 1}."
+                f"Máximo de claves por nodo: {(2 * nuevo_grado) - 1}.\n\n"
+                "El historial fue reiniciado correctamente."
             )
         else:
             messagebox.showerror(
@@ -133,11 +138,10 @@ class VentanaPrincipal:
         self.botones_tablero = []
 
         posicion = 0
-
         fila = 0
+
         while fila < 3:
             columna = 0
-
             fila_botones = []
 
             while columna < 3:
@@ -302,14 +306,17 @@ class VentanaPrincipal:
 
         if resultado == "CONTINUA":
             self.label_estado.config(text="Turno actual: Jugador Humano (X)")
+
         elif resultado == "HUMANO":
             self.bloquear_tablero()
             self.actualizar_contador_partidas()
             messagebox.showinfo("Fin de la partida", "Ganaste la partida.")
+
         elif resultado == "PROGRAMA":
             self.bloquear_tablero()
             self.actualizar_contador_partidas()
             messagebox.showinfo("Fin de la partida", "Ganó el programa.")
+
         elif resultado == "EMPATE":
             self.bloquear_tablero()
             self.actualizar_contador_partidas()
@@ -321,8 +328,8 @@ class VentanaPrincipal:
         """
 
         posicion = 0
-
         fila = 0
+
         while fila < 3:
             columna = 0
 
@@ -350,6 +357,7 @@ class VentanaPrincipal:
         """
 
         fila = 0
+
         while fila < 3:
             columna = 0
 
@@ -365,6 +373,7 @@ class VentanaPrincipal:
         """
 
         fila = 0
+
         while fila < 3:
             columna = 0
 
@@ -416,13 +425,13 @@ class VentanaPrincipal:
 
         ventana_historial = tk.Toplevel(self.ventana)
         ventana_historial.title("Historial de Partidas")
-        ventana_historial.geometry("650x500")
+        ventana_historial.geometry("750x550")
         ventana_historial.config(bg="#0F172A")
 
         titulo = tk.Label(
             ventana_historial,
             text="Historial de Partidas",
-            font=("Arial", 18, "bold"),
+            font=("Arial", 20, "bold"),
             fg="white",
             bg="#0F172A"
         )
@@ -430,35 +439,42 @@ class VentanaPrincipal:
 
         caja_texto = tk.Text(
             ventana_historial,
-            width=75,
+            width=85,
             height=25,
             font=("Consolas", 10),
             bg="#F8FAFC",
             fg="#111827"
         )
-        caja_texto.pack(padx=10, pady=10)
+        caja_texto.pack(padx=20, pady=10)
 
         texto_historial = self.obtener_historial_como_texto()
+
         caja_texto.insert("1.0", texto_historial)
         caja_texto.config(state="disabled")
 
-        def obtener_historial_como_texto(self):
-            """
-            Convierte el historial del Árbol B en texto para mostrarlo en Tkinter.
-            """
+    def obtener_historial_como_texto(self):
+        """
+        Convierte el historial del Árbol B en texto para mostrarlo en Tkinter.
+        """
 
-            texto = ""
-            texto += f"Grado mínimo del Árbol B: {self.juego.grado_arbol_b}\n"
-            texto += f"Máximo de claves por nodo: {(2 * self.juego.grado_arbol_b) - 1}\n"
-            texto += "===================================\n\n"
+        texto = ""
+        texto += "===================================\n"
+        texto += "        HISTORIAL DE PARTIDAS      \n"
+        texto += "===================================\n"
+        texto += f"Grado mínimo del Árbol B: {self.juego.grado_arbol_b}\n"
+        texto += f"Máximo de claves por nodo: {(2 * self.juego.grado_arbol_b) - 1}\n"
+        texto += "===================================\n\n"
 
-            if self.juego.historial.contador_partidas == 0:
-                texto += "No hay partidas registradas."
-                return texto
-
-            texto = self._recorrer_arbol_b_texto(self.juego.historial.arbol_b.raiz, texto)
-
+        if self.juego.historial.contador_partidas == 0:
+            texto += "No hay partidas registradas."
             return texto
+
+        texto = self._recorrer_arbol_b_texto(
+            self.juego.historial.arbol_b.raiz,
+            texto
+        )
+
+        return texto
 
     def _recorrer_arbol_b_texto(self, nodo, texto):
         """
@@ -547,8 +563,6 @@ class VentanaPrincipal:
     def ver_integrantes(self):
         """
         Muestra los integrantes del grupo.
-
-        Aquí debes cambiar los datos por los reales.
         """
 
         texto = ""
